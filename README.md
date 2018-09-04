@@ -6,6 +6,10 @@ The asset bundle companion library project for BTDebug.
 
 The BTDebug mod requires asset bundles. These asset bundles require code that needs to be compiled into a standalone dll. This is the purpose of this project.
 
+## Special Thanks
+
+* [Süleyman Yasir KULA](https://github.com/yasirkula) - [Unity runtime inspector](https://github.com/yasirkula/UnityRuntimeInspector)
+
 ## Author
 
 Richard Griffiths (CWolf)

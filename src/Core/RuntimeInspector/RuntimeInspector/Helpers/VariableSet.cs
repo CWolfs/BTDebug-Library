@@ -18,6 +18,11 @@ namespace RuntimeInspectorNamespace
 		private string[] m_variables;
 		public HashSet<string> variables = null;
 
+		public VariableSet(string type, string[] variables) {
+			m_type = type;
+			m_variables = variables;
+		}
+
 		public bool Init()
 		{
 			type = RuntimeInspectorUtils.GetType( m_type );

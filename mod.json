@@ -1,0 +1,15 @@
+{
+    "Name": "BTDebug-Library",
+    "Enabled": true,
+
+    "Version": "0.1.0",
+    "Description": "Compiles the code required by the BTDebug bundles into a stand alone assembly",
+    "Author": "CWolf",
+    "Contact": "cwolfs@gmail.com",
+
+    "DLL": "BTDebug-Library.dll",
+    "DLLEntryPoint": "BTDebug-Library.Main.Init",
+    "Settings": {
+        "PlaceHolder": false
+    }
+}

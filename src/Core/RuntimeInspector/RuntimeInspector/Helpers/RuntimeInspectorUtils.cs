@@ -164,7 +164,7 @@ namespace RuntimeInspectorNamespace
 
 		public static DraggedReferenceItem CreateDraggedReferenceItem( Object reference, PointerEventData draggingPointer, UISkin skin = null )
 		{
-			DraggedReferenceItem dri = GameObject.Find("BTDebugInspector(Clone)").GetComponent<BTDebugInspector>().draggedReferenceItemPrefab;
+			DraggedReferenceItem dri = GameObject.Find("BTDebugInspector").GetComponent<BTDebugInspector>().draggedReferenceItemPrefab;
 			DraggedReferenceItem referenceItem = (DraggedReferenceItem) Object.Instantiate(dri, DraggedReferenceItemsCanvas.transform, false );
 			referenceItem.Initialize( DraggedReferenceItemsCanvas, reference, draggingPointer, skin );
 

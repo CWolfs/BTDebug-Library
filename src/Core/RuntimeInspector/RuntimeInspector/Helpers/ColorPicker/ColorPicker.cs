@@ -13,7 +13,7 @@ namespace RuntimeInspectorNamespace
 			{
 				if( m_instance == null )
 				{
-					ColorPicker cp = GameObject.Find("BTDebugInspector(Clone)").GetComponent<BTDebugInspector>().colourPickerPrefab;
+					ColorPicker cp = GameObject.Find("BTDebugInspector").GetComponent<BTDebugInspector>().colourPickerPrefab;
 					m_instance = Instantiate(cp);
 					m_instance.gameObject.SetActive( false );
 				}

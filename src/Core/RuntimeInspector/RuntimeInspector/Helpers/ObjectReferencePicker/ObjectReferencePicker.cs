@@ -17,7 +17,7 @@ namespace RuntimeInspectorNamespace
 			{
 				if( m_instance == null )
 				{
-					ObjectReferencePicker orp = GameObject.Find("BTDebugInspector(Clone)").GetComponent<BTDebugInspector>().objectReferencePickerPrefab;
+					ObjectReferencePicker orp = GameObject.Find("BTDebugInspector").GetComponent<BTDebugInspector>().objectReferencePickerPrefab;
 					m_instance = Instantiate(orp);
 					m_instance.gameObject.SetActive( false );
 				}

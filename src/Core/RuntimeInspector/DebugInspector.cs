@@ -7,5 +7,10 @@ namespace RuntimeInspectorNamespace {
       public ColorPicker colourPickerPrefab;
       public DraggedReferenceItem draggedReferenceItemPrefab;
       public ObjectReferencePicker objectReferencePickerPrefab;
+
+      void Awake() {
+        this.gameObject.name = this.gameObject.name.Replace("(Clone)", "");
+        MonoBehaviour.DontDestroyOnLoad(this.gameObject);
+      }
   }
 }

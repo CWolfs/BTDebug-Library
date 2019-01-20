@@ -349,7 +349,13 @@ namespace RuntimeInspectorNamespace
 				GameObject highlighter = CreateHighlighter();
 				RectTransform highlighterRectTransform = highlighter.GetComponent<RectTransform>();
 				RectTransform targetRectTransform = (RectTransform)t;
+				Debug.Log($"[ModifierClickSelect] Setting anchoredPosition from '{highlighterRectTransform.anchoredPosition.ToString()}' to '{targetRectTransform.anchoredPosition.ToString()}'");
+				highlighterRectTransform.anchoredPosition = targetRectTransform.anchoredPosition;
+				Debug.Log($"[ModifierClickSelect] Setting sizeDelta from '{highlighterRectTransform.sizeDelta.ToString()}' to '{targetRectTransform.sizeDelta.ToString()}'");
+				highlighterRectTransform.sizeDelta = targetRectTransform.sizeDelta;
 
+				highlighterRectTransform.anchorMin = targetRectTransform.anchorMin;
+				highlighterRectTransform.anchorMax = targetRectTransform.anchorMax;
 			} else {
 				Debug.Log($"[ModifierClickSelect] Selected object is a unknown or generic object");
 			}

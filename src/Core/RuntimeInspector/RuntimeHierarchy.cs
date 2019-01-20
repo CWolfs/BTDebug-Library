@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using BTDebug.Highlighter;
+
 namespace RuntimeInspectorNamespace
 {
 	public class RuntimeHierarchy : SkinnedWindow
@@ -335,6 +337,24 @@ namespace RuntimeInspectorNamespace
 				CurrentSelection = null;
 		}
 
+		private GameObject CreateHighlighter() {
+			GameObject highlighterPrefab = this.transform.GetComponentInParent<HighlighterSettings>().HighlighterPrefab;
+			GameObject highlighterInstance = GameObject.Instantiate(highlighterPrefab, GameObject.Find("UIRoot").transform, false);
+			return highlighterInstance;
+		}
+
+		public void ModifierClickSelect(Transform t) {
+			if (t is RectTransform) {
+				Debug.Log($"[ModifierClickSelect] Selected object is a UI element");
+				GameObject highlighter = CreateHighlighter();
+				RectTransform highlighterRectTransform = highlighter.GetComponent<RectTransform>();
+				RectTransform targetRectTransform = (RectTransform)t;
+
+			} else {
+				Debug.Log($"[ModifierClickSelect] Selected object is a unknown or generic object");
+			}
+		}
+
 		public bool Select( Transform selection )
 		{
 			if( selection.IsNull() )
@@ -344,6 +364,12 @@ namespace RuntimeInspectorNamespace
 			}
 			else
 			{
+				if (Input.GetKey(KeyCode.LeftControl))
+				{
+					Debug.Log($"Left Control Click on Hierarchy Item '{selection.name}'");
+					ModifierClickSelect(selection);
+				}
+
 				if( selection == CurrentSelection )
 					return true;
 

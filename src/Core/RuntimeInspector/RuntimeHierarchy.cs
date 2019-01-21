@@ -151,22 +151,17 @@ namespace RuntimeInspectorNamespace
 		public Transform CurrentSelection
 		{
 			get { return m_currentSelection; }
-			private set
-			{
-				if( value != null && value.Equals( null ) )
-					value = null;
+			private set {
+				if (value != null && value.Equals(null)) value = null;
 
-				if( m_currentSelection != value )
-				{
+				if (m_currentSelection != value)	{
 					m_currentSelection = value;
 
 #if UNITY_EDITOR
-					if( syncSelectionWithEditorHierarchy )
-						UnityEditor.Selection.activeTransform = m_currentSelection;
+					if (syncSelectionWithEditorHierarchy) UnityEditor.Selection.activeTransform = m_currentSelection;
 #endif
 
-					if( OnSelectionChanged != null )
-						OnSelectionChanged( m_currentSelection );
+					if (OnSelectionChanged != null) OnSelectionChanged( m_currentSelection );
 				}
 			}
 		}
@@ -296,6 +291,12 @@ namespace RuntimeInspectorNamespace
 
 		public void OnClicked( HierarchyItem drawer )
 		{
+			if (!drawer.IsNull()) {
+				if (drawer is HierarchyItemTransform) {
+					OnPreSelect(((HierarchyItemTransform)drawer).BoundTransform.gameObject.transform);
+				}
+			}
+			
 			if( currentlySelectedDrawer == drawer )
 			{
 				if( OnItemDoubleClicked != null )
@@ -329,7 +330,7 @@ namespace RuntimeInspectorNamespace
 				drawer.IsSelected = true;
 
 				if( drawer is HierarchyItemTransform )
-					CurrentSelection = ( (HierarchyItemTransform) drawer ).BoundTransform;
+					CurrentSelection = ((HierarchyItemTransform)drawer).BoundTransform;
 				else
 					CurrentSelection = null;
 			}
@@ -349,33 +350,37 @@ namespace RuntimeInspectorNamespace
 				GameObject highlighter = CreateHighlighter();
 				RectTransform highlighterRectTransform = highlighter.GetComponent<RectTransform>();
 				RectTransform targetRectTransform = (RectTransform)t;
-				Debug.Log($"[ModifierClickSelect] Setting anchoredPosition from '{highlighterRectTransform.anchoredPosition.ToString()}' to '{targetRectTransform.anchoredPosition.ToString()}'");
-				highlighterRectTransform.anchoredPosition = targetRectTransform.anchoredPosition;
-				Debug.Log($"[ModifierClickSelect] Setting sizeDelta from '{highlighterRectTransform.sizeDelta.ToString()}' to '{targetRectTransform.sizeDelta.ToString()}'");
+
+				// Debug.Log($"[ModifierClickSelect] Setting sizeDelta from '{highlighterRectTransform.sizeDelta.ToString()}' to '{targetRectTransform.sizeDelta.ToString()}'");
 				highlighterRectTransform.sizeDelta = targetRectTransform.sizeDelta;
 
 				highlighterRectTransform.anchorMin = targetRectTransform.anchorMin;
 				highlighterRectTransform.anchorMax = targetRectTransform.anchorMax;
+
+				highlighterRectTransform.pivot = targetRectTransform.pivot;
+
+				// Debug.Log($"[ModifierClickSelect] Setting anchoredPosition from '{highlighterRectTransform.anchoredPosition.ToString()}' to '{targetRectTransform.anchoredPosition.ToString()}'");
+				highlighterRectTransform.anchoredPosition = targetRectTransform.anchoredPosition;
+
+				highlighterRectTransform.position = targetRectTransform.position;
 			} else {
 				Debug.Log($"[ModifierClickSelect] Selected object is a unknown or generic object");
 			}
 		}
 
-		public bool Select( Transform selection )
-		{
-			if( selection.IsNull() )
-			{
+		public void OnPreSelect(Transform selection) {
+			Debug.Log($"OnPreSelect running");
+			if (Input.GetKey(KeyCode.LeftControl)) {
+				Debug.Log($"Left Control Click on Hierarchy Item '{selection.name}'");
+				ModifierClickSelect(selection);
+			}
+		}
+
+		public bool Select(Transform selection) {
+			if(selection.IsNull()) {
 				Deselect();
 				return true;
-			}
-			else
-			{
-				if (Input.GetKey(KeyCode.LeftControl))
-				{
-					Debug.Log($"Left Control Click on Hierarchy Item '{selection.name}'");
-					ModifierClickSelect(selection);
-				}
-
+			} else {
 				if( selection == CurrentSelection )
 					return true;
 

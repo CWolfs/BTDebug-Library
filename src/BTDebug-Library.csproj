@@ -18,4 +18,9 @@
     </Reference>
   </ItemGroup>
 
+
+  <Target Name="BuildServer" BeforeTargets="Build">
+    <Exec Command="xcopy &quot;$(TargetDir)BTDebug-Library.dll&quot; &quot;D:\Modding\Battletech\BTDebug-Bundler\Assets\Plugins&quot;   /i /s /r /y /c&#xD;&#xA;" />
+  </Target>
+
 </Project>

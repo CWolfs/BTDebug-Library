@@ -18,9 +18,7 @@ namespace BTDebug.Highlighter {
     }
 
     void Update() {
-      Debug.Log($"[Highlighter] Updating alpha from '{highlightColour.a}' to");
       highlightColour.a -= interval;
-      Debug.Log($"[Highlighter] '{highlightColour.a}");
       if (highlightColour.a <= endThreshold) {
         GameObject.Destroy(this.gameObject);
       } else {

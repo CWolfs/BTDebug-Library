@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using BTDebug.Highlighter;
+
 namespace RuntimeInspectorNamespace
 {
 	public class RuntimeHierarchy : SkinnedWindow
@@ -149,22 +151,17 @@ namespace RuntimeInspectorNamespace
 		public Transform CurrentSelection
 		{
 			get { return m_currentSelection; }
-			private set
-			{
-				if( value != null && value.Equals( null ) )
-					value = null;
+			private set {
+				if (value != null && value.Equals(null)) value = null;
 
-				if( m_currentSelection != value )
-				{
+				if (m_currentSelection != value)	{
 					m_currentSelection = value;
 
 #if UNITY_EDITOR
-					if( syncSelectionWithEditorHierarchy )
-						UnityEditor.Selection.activeTransform = m_currentSelection;
+					if (syncSelectionWithEditorHierarchy) UnityEditor.Selection.activeTransform = m_currentSelection;
 #endif
 
-					if( OnSelectionChanged != null )
-						OnSelectionChanged( m_currentSelection );
+					if (OnSelectionChanged != null) OnSelectionChanged( m_currentSelection );
 				}
 			}
 		}
@@ -294,6 +291,12 @@ namespace RuntimeInspectorNamespace
 
 		public void OnClicked( HierarchyItem drawer )
 		{
+			if (!drawer.IsNull()) {
+				if (drawer is HierarchyItemTransform) {
+					OnPreSelect(((HierarchyItemTransform)drawer).BoundTransform.gameObject.transform);
+				}
+			}
+			
 			if( currentlySelectedDrawer == drawer )
 			{
 				if( OnItemDoubleClicked != null )
@@ -327,7 +330,7 @@ namespace RuntimeInspectorNamespace
 				drawer.IsSelected = true;
 
 				if( drawer is HierarchyItemTransform )
-					CurrentSelection = ( (HierarchyItemTransform) drawer ).BoundTransform;
+					CurrentSelection = ((HierarchyItemTransform)drawer).BoundTransform;
 				else
 					CurrentSelection = null;
 			}
@@ -335,15 +338,60 @@ namespace RuntimeInspectorNamespace
 				CurrentSelection = null;
 		}
 
-		public bool Select( Transform selection )
-		{
-			if( selection.IsNull() )
-			{
+		private GameObject CreateHighlighter(string type, Transform parent) {
+			if (type == "UI") {
+				GameObject highlighterPrefab = this.transform.GetComponentInParent<HighlighterSettings>().HighlighterPrefab;
+				GameObject highlighterInstance = GameObject.Instantiate(highlighterPrefab, parent, false);
+				return highlighterInstance;
+			} else if (type == "GameObject") {
+				if (!parent.Find("Highlighter")) {
+					GameObject highlighterPrefab = this.transform.GetComponentInParent<HighlighterSettings>().GameObjectHighlighterPrefab;
+					GameObject highlighterInstance = GameObject.Instantiate(highlighterPrefab, parent);
+					highlighterInstance.transform.localPosition = Vector3.zero;
+					return highlighterInstance;
+				}
+			}
+			return null;
+		}
+
+		public void ModifierClickSelect(Transform t) {
+			if (t is RectTransform) {
+				Debug.Log($"[ModifierClickSelect] Selected object is a UI element");
+				GameObject highlighter = CreateHighlighter("UI", GameObject.Find("UIRoot").transform);
+				RectTransform highlighterRectTransform = highlighter.GetComponent<RectTransform>();
+				RectTransform targetRectTransform = (RectTransform)t;
+
+				highlighterRectTransform.sizeDelta = targetRectTransform.sizeDelta;
+				highlighterRectTransform.anchorMin = targetRectTransform.anchorMin;
+				highlighterRectTransform.anchorMax = targetRectTransform.anchorMax;
+				highlighterRectTransform.pivot = targetRectTransform.pivot;
+				highlighterRectTransform.anchoredPosition = targetRectTransform.anchoredPosition;
+				highlighterRectTransform.position = targetRectTransform.position;
+			} else {
+				GameObject go = t.gameObject;
+				Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
+				if (renderers.Length > 0) {
+					Debug.Log($"[ModifierClickSelect] Selected object is a game object with a renderer");
+					GameObject highlighter = CreateHighlighter("GameObject", t);
+				} else {
+					Debug.Log($"[ModifierClickSelect] Selected object is a unknown type");
+				}
+			}
+		}
+
+		public void OnPreSelect(Transform selection) {
+			Debug.Log($"OnPreSelect running");
+			if (Input.GetKey(KeyCode.LeftControl)) {
+				Debug.Log($"Left Control Click on Hierarchy Item '{selection.name}'");
+				ModifierClickSelect(selection);
+			}
+		}
+
+		public bool Select(Transform selection) {
+			if(selection.IsNull()) {
 				Deselect();
 				return true;
-			}
-			else
-			{
+			} else {
 				if( selection == CurrentSelection )
 					return true;
 

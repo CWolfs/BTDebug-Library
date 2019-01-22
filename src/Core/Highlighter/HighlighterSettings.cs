@@ -12,5 +12,12 @@ namespace BTDebug.Highlighter {
       get { return highlighterPrefab; }
     }
 
+    [SerializeField]
+    private GameObject gameObjectHighlighterPrefab;
+
+    public GameObject GameObjectHighlighterPrefab {
+      get { return gameObjectHighlighterPrefab; }
+    }
+
   }
 }

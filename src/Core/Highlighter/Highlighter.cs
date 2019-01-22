@@ -8,8 +8,8 @@ namespace BTDebug.Highlighter {
     private Image highlightImage;
     private Color highlightColour;
     
-    private float endThreshold = 20f/255f;
-    private float interval = 10f/255f;
+    private float endThreshold = 1f/255f;
+    private float interval = 2f;
 
     void Start() {
       highlightImage = this.GetComponent<Image>();
@@ -18,7 +18,7 @@ namespace BTDebug.Highlighter {
     }
 
     void Update() {
-      highlightColour.a -= interval;
+      highlightColour.a -= (interval * Time.deltaTime);
       if (highlightColour.a <= endThreshold) {
         GameObject.Destroy(this.gameObject);
       } else {

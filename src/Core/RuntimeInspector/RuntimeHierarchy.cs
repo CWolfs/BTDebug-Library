@@ -338,33 +338,44 @@ namespace RuntimeInspectorNamespace
 				CurrentSelection = null;
 		}
 
-		private GameObject CreateHighlighter() {
-			GameObject highlighterPrefab = this.transform.GetComponentInParent<HighlighterSettings>().HighlighterPrefab;
-			GameObject highlighterInstance = GameObject.Instantiate(highlighterPrefab, GameObject.Find("UIRoot").transform, false);
-			return highlighterInstance;
+		private GameObject CreateHighlighter(string type, Transform parent) {
+			if (type == "UI") {
+				GameObject highlighterPrefab = this.transform.GetComponentInParent<HighlighterSettings>().HighlighterPrefab;
+				GameObject highlighterInstance = GameObject.Instantiate(highlighterPrefab, parent, false);
+				return highlighterInstance;
+			} else if (type == "GameObject") {
+				if (!parent.Find("Highlighter")) {
+					GameObject highlighterPrefab = this.transform.GetComponentInParent<HighlighterSettings>().GameObjectHighlighterPrefab;
+					GameObject highlighterInstance = GameObject.Instantiate(highlighterPrefab, parent);
+					highlighterInstance.transform.localPosition = Vector3.zero;
+					return highlighterInstance;
+				}
+			}
+			return null;
 		}
 
 		public void ModifierClickSelect(Transform t) {
 			if (t is RectTransform) {
 				Debug.Log($"[ModifierClickSelect] Selected object is a UI element");
-				GameObject highlighter = CreateHighlighter();
+				GameObject highlighter = CreateHighlighter("UI", GameObject.Find("UIRoot").transform);
 				RectTransform highlighterRectTransform = highlighter.GetComponent<RectTransform>();
 				RectTransform targetRectTransform = (RectTransform)t;
 
-				// Debug.Log($"[ModifierClickSelect] Setting sizeDelta from '{highlighterRectTransform.sizeDelta.ToString()}' to '{targetRectTransform.sizeDelta.ToString()}'");
 				highlighterRectTransform.sizeDelta = targetRectTransform.sizeDelta;
-
 				highlighterRectTransform.anchorMin = targetRectTransform.anchorMin;
 				highlighterRectTransform.anchorMax = targetRectTransform.anchorMax;
-
 				highlighterRectTransform.pivot = targetRectTransform.pivot;
-
-				// Debug.Log($"[ModifierClickSelect] Setting anchoredPosition from '{highlighterRectTransform.anchoredPosition.ToString()}' to '{targetRectTransform.anchoredPosition.ToString()}'");
 				highlighterRectTransform.anchoredPosition = targetRectTransform.anchoredPosition;
-
 				highlighterRectTransform.position = targetRectTransform.position;
 			} else {
-				Debug.Log($"[ModifierClickSelect] Selected object is a unknown or generic object");
+				GameObject go = t.gameObject;
+				Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
+				if (renderers.Length > 0) {
+					Debug.Log($"[ModifierClickSelect] Selected object is a game object with a renderer");
+					GameObject highlighter = CreateHighlighter("GameObject", t);
+				} else {
+					Debug.Log($"[ModifierClickSelect] Selected object is a unknown type");
+				}
 			}
 		}
 

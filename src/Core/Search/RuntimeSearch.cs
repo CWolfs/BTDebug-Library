@@ -20,14 +20,23 @@ namespace BTDebug.RuntimeSearch {
 
     void Start() {
       searchInput.onEndEdit.AddListener(delegate {
-        Search(searchInput.text, searchType.captionText.text);
+        List<GameObject> results = Search(searchInput.text, searchType.captionText.text);
+        DisplayResults(results);
       });
     }
 
-    public static void Search(string searchValue, string type) {
+    private void DisplayResults(List<GameObject> results) {
+      foreach (GameObject go in results) {
+
+        Debug.Log($"[Result] {go.GetGameObjectPath()}");
+      }
+    }
+
+    public List<GameObject> Search(string searchValue, string type) {
+      List<GameObject> results = new List<GameObject>();
       Debug.Log($"Search triggered with value '{searchValue}' and '{type}'");
+
       if (type == "Object Name") {
-        List<GameObject> results = new List<GameObject>();
         GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (GameObject go in rootGameObjects) {
           if (go.name.Contains(searchValue)) results.Add(go);
@@ -36,15 +45,21 @@ namespace BTDebug.RuntimeSearch {
         Debug.Log($"[BTDebug Search] '{results.Count}' items found");
       } else if (type == "Component") {
         Type systemType = ReflectionUtils.GetAssemblyType(searchValue);
+
         if (systemType != null) {
-          UnityEngine.Object[] types = GameObject.FindObjectsOfType(systemType);
-          Debug.Log($"[BTDebug Search] '{types.Length}' items found");
+          UnityEngine.Object[] typeObjects = GameObject.FindObjectsOfType(systemType);
+          foreach (var typeObject in typeObjects) {
+            results.Add(((Component)typeObject).gameObject);
+          }
+          Debug.Log($"[BTDebug Search] '{results.Count}' items found");
         } else {
           Debug.Log($"[BTDebug Search] Unknown type of '{searchValue}'. Please use a correct component type.");
         }
       } else {
         Debug.Log("[BTDebug Search] Unknown search type of '{type}'");
       }
+
+      return results;
     }
   } 
 }

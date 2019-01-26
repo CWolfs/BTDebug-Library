@@ -31,5 +31,15 @@ namespace BTDebug.Utils {
 
       return gameObjects;
     }
+
+    public static string GetGameObjectPath(this GameObject go) {
+      Transform transform = go.transform;
+      string path = transform.name;
+      while (transform.parent != null) {
+          transform = transform.parent;
+          path = transform.name + "/" + path;
+      }
+      return path;
+    }
   }
 }

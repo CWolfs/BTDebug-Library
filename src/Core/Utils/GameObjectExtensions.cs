@@ -32,6 +32,24 @@ namespace BTDebug.Utils {
       return gameObjects;
     }
 
+    public static List<GameObject> FindAllContainsRecursiveIgnoreCase(this GameObject go, params string[] names) {
+      List<GameObject> gameObjects = new List<GameObject>();
+
+      foreach (Transform t in go.transform) {
+        foreach (string checkName in names) {
+          string check = checkName.ToLower();
+          string name = t.name.ToLower();
+          if (name.Contains(check)) {
+            gameObjects.Add(t.gameObject);
+          }
+        }
+
+        gameObjects.AddRange(t.gameObject.FindAllContainsRecursiveIgnoreCase(names));
+      }
+
+      return gameObjects;
+    }
+
     public static string GetGameObjectPath(this GameObject go) {
       Transform transform = go.transform;
       string path = transform.name;

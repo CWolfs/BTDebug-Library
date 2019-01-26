@@ -10,6 +10,13 @@ namespace BTDebug.RuntimeSearch {
     [SerializeField]
     private RuntimeSearch runtimeSearch;
 
+    [SerializeField]
+    private GameObject searchObject;
+    public GameObject SearchObject {
+      get { return searchObject; }
+      set { searchObject = value; }
+    }
+
     private PointerEventListener clickListener;
     private Image background;
 
@@ -22,6 +29,10 @@ namespace BTDebug.RuntimeSearch {
       clickListener = GetComponent<PointerEventListener>();
       background = clickListener.GetComponent<Image>();
 			clickListener.PointerClick += ( eventData ) => OnClicked();
+    }
+
+    public void SetSearchObject(GameObject searchObject) {
+      this.SearchObject = searchObject;
     }
 
     public void OnClicked() {

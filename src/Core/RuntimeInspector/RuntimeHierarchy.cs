@@ -380,36 +380,34 @@ namespace RuntimeInspectorNamespace
 		}
 
 		public void OnPreSelect(Transform selection) {
-			Debug.Log($"OnPreSelect running");
 			if (Input.GetKey(KeyCode.LeftControl)) {
-				Debug.Log($"Left Control Click on Hierarchy Item '{selection.name}'");
 				ModifierClickSelect(selection);
 			}
 		}
 
 		public bool Select(Transform selection) {
-			if(selection.IsNull()) {
+			if (selection.IsNull()) {
 				Deselect();
 				return true;
 			} else {
-				if( selection == CurrentSelection )
-					return true;
+				if (selection == CurrentSelection) return true;
 
 				Scene selectionScene = selection.gameObject.scene;
-				for( int i = 0; i < sceneDrawers.Count; i++ )
-				{
+				for (int i = 0; i < sceneDrawers.Count; i++) {
 					IHierarchyRootContent content = sceneDrawers[i].Content;
-					if( ( content is HierarchyRootPseudoScene ) || ( (HierarchyRootScene) content ).Scene == selectionScene )
-					{
-						HierarchyItem selectionItem = sceneDrawers[i].SelectTransform( selection );
-						if( selectionItem != null )
-						{
-							if( drawArea.sizeDelta.y > 0f )
-							{
+					if ((content is HierarchyRootPseudoScene) || ((HierarchyRootScene)content).Scene == selectionScene) {
+						HierarchyItem selectionItem = sceneDrawers[i].SelectTransform(selection);
+						if (selectionItem != null) {
+							if (drawArea.sizeDelta.y > 0f) {
 								// Focus on selected HierarchyItem
-								LayoutRebuilder.ForceRebuildLayoutImmediate( drawArea );
-								Vector3 localPos = drawArea.InverseTransformPoint( selectionItem.transform.position );
-								scrollView.verticalNormalizedPosition = Mathf.Clamp01( 1f + localPos.y / drawArea.sizeDelta.y );
+								LayoutRebuilder.ForceRebuildLayoutImmediate(drawArea);
+								//Vector3 localPos = drawArea.InverseTransformPoint(selectionItem.transform.position);
+								//scrollView.verticalNormalizedPosition = Mathf.Clamp01(1f + localPos.y / drawArea.sizeDelta.y);
+								Vector2 pos =
+										(Vector2)scrollView.transform.InverseTransformPoint(drawArea.position)
+										- (Vector2)scrollView.transform.InverseTransformPoint(selectionItem.transform.position);
+								pos.x = drawArea.anchoredPosition.x;
+								drawArea.anchoredPosition = pos;
 							}
 
 							return true;

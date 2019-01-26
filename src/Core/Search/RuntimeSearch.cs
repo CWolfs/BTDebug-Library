@@ -18,6 +18,12 @@ namespace BTDebug.RuntimeSearch {
     [SerializeField]
     private Dropdown searchType;
 
+    [SerializeField]
+    private GameObject viewList;
+
+    [SerializeField]
+    private GameObject listItemPrefab;
+
     void Start() {
       searchInput.onEndEdit.AddListener(delegate {
         List<GameObject> results = Search(searchInput.text, searchType.captionText.text);
@@ -26,9 +32,14 @@ namespace BTDebug.RuntimeSearch {
     }
 
     private void DisplayResults(List<GameObject> results) {
-      foreach (GameObject go in results) {
+      foreach (Transform child in viewList.transform) {
+          GameObject.Destroy(child.gameObject);
+      }
 
+      foreach (GameObject go in results) {
         Debug.Log($"[Result] {go.GetGameObjectPath()}");
+        GameObject instantiatedItem = GameObject.Instantiate(listItemPrefab, viewList.transform, false);
+        instantiatedItem.GetComponentInChildren<Text>().text = go.name;
       }
     }
 

@@ -18,5 +18,5 @@ namespace BTDebug.Utils {
       }
       return null;
 	  }
-  } 
+  }
 }

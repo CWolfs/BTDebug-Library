@@ -39,7 +39,8 @@ namespace BTDebug.RuntimeSearch {
       foreach (GameObject go in results) {
         Debug.Log($"[Result] {go.GetGameObjectPath()}");
         GameObject instantiatedItem = GameObject.Instantiate(listItemPrefab, viewList.transform, false);
-        instantiatedItem.GetComponentInChildren<Text>().text = go.name;
+        instantiatedItem.transform.Find("Name").GetComponent<Text>().text = go.name;
+        instantiatedItem.transform.Find("Path").GetComponent<Text>().text = go.GetGameObjectPath();
       }
     }
 
@@ -48,12 +49,15 @@ namespace BTDebug.RuntimeSearch {
       Debug.Log($"Search triggered with value '{searchValue}' and '{type}'");
 
       if (type == "Object Name") {
-        GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-        foreach (GameObject go in rootGameObjects) {
-          if (go.name.Contains(searchValue)) results.Add(go);
-          results.AddRange(go.FindAllContainsRecursive(searchValue));
+        int sceneCount = SceneManager.sceneCount;
+        Debug.Log($"[BTDebug Search] '{sceneCount}' scene count");
+        for (int i = 0; i < sceneCount; i++) {
+          Scene scene = SceneManager.GetSceneAt(i);
+          SearchScene(scene, results, searchValue);
         }
-        Debug.Log($"[BTDebug Search] '{results.Count}' items found");
+
+        Scene dontDestroyScene = GetDontDestroyOnLoadScene();
+        SearchScene(dontDestroyScene, results, searchValue);
       } else if (type == "Component") {
         Type systemType = ReflectionUtils.GetAssemblyType(searchValue);
 
@@ -71,6 +75,32 @@ namespace BTDebug.RuntimeSearch {
       }
 
       return results;
+    }
+
+    private void SearchScene(Scene scene, List<GameObject> results, string searchValue) {
+      Debug.Log($"[BTDebug Search] '{scene.name}' scene found");
+      GameObject[] rootGameObjects = scene.GetRootGameObjects();
+      foreach (GameObject go in rootGameObjects) {
+        Debug.Log($"[BTDebug Search] '{go.name}' root found");
+        if (go.name.Contains(searchValue)) results.Add(go);
+        results.AddRange(go.FindAllContainsRecursive(searchValue));
+      }
+      Debug.Log($"[BTDebug Search] '{results.Count}' items found");
+    }
+
+    public Scene GetDontDestroyOnLoadScene() {
+      GameObject temp = null;
+      try {
+        temp = new GameObject();
+        DontDestroyOnLoad(temp);
+        Scene dontDestroyOnLoad = temp.scene;
+        DestroyImmediate(temp);
+        temp = null;
+
+        return dontDestroyOnLoad;
+      } finally {
+        if (temp != null) DestroyImmediate(temp);
+      }
     }
   } 
 }

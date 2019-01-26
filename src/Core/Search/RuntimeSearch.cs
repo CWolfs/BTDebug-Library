@@ -24,11 +24,19 @@ namespace BTDebug.RuntimeSearch {
     [SerializeField]
     private GameObject listItemPrefab;
 
+    private SearchItem selectedItem;
+
     void Start() {
       searchInput.onEndEdit.AddListener(delegate {
         List<GameObject> results = Search(searchInput.text, searchType.captionText.text);
         DisplayResults(results);
       });
+    }
+
+    public void SetSelectedItem(SearchItem item) {
+      if (selectedItem != null) selectedItem.Deselect();
+      selectedItem = item;
+      selectedItem.Select();
     }
 
     private void DisplayResults(List<GameObject> results) {
@@ -37,7 +45,7 @@ namespace BTDebug.RuntimeSearch {
       }
 
       foreach (GameObject go in results) {
-        Debug.Log($"[Result] {go.GetGameObjectPath()}");
+        // Debug.Log($"[Result] {go.GetGameObjectPath()}");
         GameObject instantiatedItem = GameObject.Instantiate(listItemPrefab, viewList.transform, false);
         instantiatedItem.transform.Find("Name").GetComponent<Text>().text = go.name;
         instantiatedItem.transform.Find("Path").GetComponent<Text>().text = go.GetGameObjectPath();
@@ -45,12 +53,13 @@ namespace BTDebug.RuntimeSearch {
     }
 
     public List<GameObject> Search(string searchValue, string type) {
+      Reset();
+
       List<GameObject> results = new List<GameObject>();
       Debug.Log($"Search triggered with value '{searchValue}' and '{type}'");
 
       if (type == "Object Name") {
         int sceneCount = SceneManager.sceneCount;
-        Debug.Log($"[BTDebug Search] '{sceneCount}' scene count");
         for (int i = 0; i < sceneCount; i++) {
           Scene scene = SceneManager.GetSceneAt(i);
           SearchScene(scene, results, searchValue);
@@ -78,14 +87,11 @@ namespace BTDebug.RuntimeSearch {
     }
 
     private void SearchScene(Scene scene, List<GameObject> results, string searchValue) {
-      Debug.Log($"[BTDebug Search] '{scene.name}' scene found");
       GameObject[] rootGameObjects = scene.GetRootGameObjects();
       foreach (GameObject go in rootGameObjects) {
-        Debug.Log($"[BTDebug Search] '{go.name}' root found");
         if (go.name.Contains(searchValue)) results.Add(go);
         results.AddRange(go.FindAllContainsRecursive(searchValue));
       }
-      Debug.Log($"[BTDebug Search] '{results.Count}' items found");
     }
 
     public Scene GetDontDestroyOnLoadScene() {
@@ -101,6 +107,11 @@ namespace BTDebug.RuntimeSearch {
       } finally {
         if (temp != null) DestroyImmediate(temp);
       }
+    }
+
+    public void Reset() {
+      if (selectedItem != null) selectedItem.Deselect();
+      selectedItem = null;
     }
   } 
 }

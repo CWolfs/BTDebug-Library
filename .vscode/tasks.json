@@ -1,15 +1,33 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "D:/Modding/Battletech/BTDebug-Library/src/BTDebug-Library.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build editor",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "E:/modding/BTDebug-Library/src/BTDebug-Library.csproj",
+        "/p:Configuration=Editor"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build game",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "E:/modding/BTDebug-Library/src/BTDebug-Library.csproj",
+        "/p:Configuration=Game"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build and copy",
+      "type": "shell",
+      "command": "./copy-assets.sh",
+      "dependsOn": ["build editor", "build game"]
+    }
+  ]
 }

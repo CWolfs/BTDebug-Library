@@ -1,26 +1,90 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <FrameworkPathOverride>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+    <Version>1.0.0</Version>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net471</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net35</TargetFramework>
-  </PropertyGroup>
+  <Target Name="assembleEditor" Condition=" '$(Configuration)' == 'Editor' " BeforeTargets="PrepareForBuild">
+    <Message Text="This custom target will only be executed when configuration is EDITOR" Importance="high"></Message>
+    <PropertyGroup>
+      <InformationalVersion>1.0.0e</InformationalVersion>
+      <DefineConstants>UNITY_EDITOR;UNITY_2017_3_OR_NEWER;ENABLE_CURSOR_MANAGEMENT</DefineConstants>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="assembleGame" Condition=" '$(Configuration)' == 'Game' " BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <InformationalVersion>1.0.0g</InformationalVersion>
+    </PropertyGroup>
+    <Message Text="This custom target will only be executed when configuration is GAME" Importance="high"></Message>
+  </Target>
 
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+        <Reference Include="Unity.TextMeshPro">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Unity">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\Dapper.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\System.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\System.Runtime.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="InControl">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\BATTLETECH\BattleTech_Data\Managed\InControl.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>E:\Program Files\Unity\2017.1.0p5\Editor\Data\Managed\UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-
-  <Target Name="BuildServer" BeforeTargets="Build">
-    <Exec Command="xcopy &quot;$(TargetDir)BTDebug-Library.dll&quot; &quot;D:\Modding\Battletech\BTDebug-Bundler\Assets\Plugins&quot;   /i /s /r /y /c&#xD;&#xA;" />
-  </Target>
 
 </Project>
